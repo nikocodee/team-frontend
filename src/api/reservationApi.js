@@ -21,6 +21,16 @@ export const deleteAllReservation = async () => {
 };
 
 export const updateReservationCount = async (reservations) => {
-  const response = await axios.put(`/api/reservation/update`, reservations)
-  return response.data
-}
+  const response = await axios.put(`/api/reservation/update`, reservations);
+  return response.data;
+};
+
+export const getReservationsByPaymentId = async (pymId) => {
+  const response = await axios.get(`/api/reservation/payment/${pymId}`);
+  return response.data;
+};
+
+export const updateReservationStatus = async (rsvId) => {
+  const responese = await axios.put(`/api/reservation/${rsvId}/status`);
+  return responese.data;
+};

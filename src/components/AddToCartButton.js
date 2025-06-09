@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 function AddToCartButton({ data, productType }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [rsvCnt, setRsvCnt] = useState(1); // 수량 상태 추가
 
   const handleReservation = () => {
@@ -40,7 +40,9 @@ function AddToCartButton({ data, productType }) {
                 data.hopeWorkAreaCity,
                 data.hopeWorkPlace,
                 data.hopeWorkType,
-              ].filter(Boolean).join(" "),
+              ]
+                .filter(Boolean)
+                .join(" "),
               prodPrice: data.hopeWorkAmount,
               rsvType: 1, // 결제전
               rsvCnt,
@@ -58,7 +60,9 @@ function AddToCartButton({ data, productType }) {
                 data.facilityAddressCity,
                 data.facilityDetailAddress,
                 data.facilityHomepage,
-              ].filter(Boolean).join(" "),
+              ]
+                .filter(Boolean)
+                .join(" "),
               prodPrice: data.facilityCharge,
               rsvType: 1, // 결제전
               rsvCnt,
@@ -66,10 +70,9 @@ function AddToCartButton({ data, productType }) {
 
       await createReservation(reservationData);
 
-      alert("예약이 완료되었습니다! 🎉");
+      alert("예약이 완료되었습니다!");
 
       navigate(`/reservation/member/${memberId}`);
-     
 
       setIsConfirmOpen(false);
     } catch (err) {
@@ -77,7 +80,7 @@ function AddToCartButton({ data, productType }) {
     }
   };
 
-return (
+  return (
     <>
       <button onClick={handleReservation}>예약하기</button>
 
@@ -107,7 +110,9 @@ return (
             onClick={(e) => e.stopPropagation()}
           >
             <h3>예약할 수량을 선택하세요</h3>
-            <button onClick={() => setRsvCnt(Math.max(1, rsvCnt - 1))}>-</button>
+            <button onClick={() => setRsvCnt(Math.max(1, rsvCnt - 1))}>
+              -
+            </button>
             <span>{rsvCnt}</span>
             <button onClick={() => setRsvCnt(rsvCnt + 1)}>+</button>
             <div style={{ marginTop: "10px" }}>
@@ -147,10 +152,8 @@ return (
           </div>
         </div>
       )}
-
     </>
   );
-
 }
 
 export default AddToCartButton;

@@ -22,6 +22,7 @@ import PaymentResult from "../components/PaymentResult";
 import ReviewBoard from "../components/ReviewBoard";
 import ReviewWrite from "../components/ReviewWrite";
 import AdminDashboard from "../features/admin/AdminDashboard";
+import PaymentList from "../components/PaymentList";
 
 const AppRouter = () => {
   return (
@@ -61,6 +62,7 @@ const AppRouter = () => {
       <Route path="/reservation/member/:memberId" element={<Reservation />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/payment-result" element={<PaymentResult />} />
+      <Route path="/payment/member/:memberId" element={<PaymentList />} />
       <Route path="/review-board" element={<ReviewBoard />} />
       <Route path="/review-write" element={<ReviewWrite />} />
 

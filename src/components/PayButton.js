@@ -1,7 +1,8 @@
 import React from "react";
-import { createPayment } from "../api/paymentApi";
+import { createPayment, mapReservationsToPayment } from "../api/paymentApi";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import { updateReservationStatus } from "../api/reservationApi";
 
 const PayButton = ({ reservations, totalPrice, userInfo, memberId }) => {
   const navigate = useNavigate();
@@ -64,9 +65,9 @@ const PayButton = ({ reservations, totalPrice, userInfo, memberId }) => {
     // ====== 하드코딩 테스트용 결제 성공 처리 예시 =======
     (async () => {
       try {
-        const generatedUuid = uuidv4();
+        const pymId = uuidv4();
         const result = await createPayment({
-          pymId: generatedUuid,
+          pymId,
           impUid: "imp_test_123456789",
           merchantUid: `mid_${new Date().getTime()}`,
           rsvId: reservations[0]?.rsvId,
@@ -80,18 +81,33 @@ const PayButton = ({ reservations, totalPrice, userInfo, memberId }) => {
           pymPrice: totalPrice,
           pymStatus: 1,
           pymMethod: "card",
-          pymNum: "1234-5678-9012"
+          pymNum: "1234-5678-9012",
           // pymDate: new Date().toISOString().slice(0, 19).replace("T", " "),
         });
+
+        const mappingList = reservations.map((rsv) => ({
+          pymId,
+          rsvId: rsv.rsvId,
+        }));
+
+        // 3. 매핑 정보 서버에 저장 요청
+        await mapReservationsToPayment(mappingList);
+
+        // 4. 예약 상태 결제완료(3)로 업데이트 API 호출
+        for (const rsv of reservations) {
+          await updateReservationStatus(rsv.rsvId);
+        }
+
         alert("결제 완료 및 저장 성공 (테스트용 하드코딩)");
-        // console.log(result);
+        console.log(result);
         // window.location.href = "/payment-result";
         navigate("/payment-result", {
           state: {
             reservations,
             totalPrice,
             userInfo,
-            pymId: generatedUuid
+            pymId,
+            memberId,
           },
         });
       } catch (error) {
@@ -100,11 +116,7 @@ const PayButton = ({ reservations, totalPrice, userInfo, memberId }) => {
     })();
   };
 
-  return (
-    <button onClick={handlePayment}>
-      결제하기
-    </button>
-  );
+  return <button onClick={handlePayment}>결제하기</button>;
 };
 
 export default PayButton;
