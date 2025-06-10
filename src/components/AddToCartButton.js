@@ -46,6 +46,7 @@ function AddToCartButton({ data, productType }) {
               prodPrice: data.hopeWorkAmount,
               rsvType: 1, // 결제전
               rsvCnt,
+              prodPhoto: Array.isArray(data.photos) && data.photos.length > 0 ? data.photos[0] : "/images/default.png"
             }
           : {
               rsvId: generatedUuid,
@@ -66,6 +67,8 @@ function AddToCartButton({ data, productType }) {
               prodPrice: data.facilityCharge,
               rsvType: 1, // 결제전
               rsvCnt,
+              // prodPhoto: data.photos?.[0] || null,
+              prodPhoto: Array.isArray(data.photos) && data.photos.length > 0 ? data.photos[0] : "/images/default.png"
             };
 
       await createReservation(reservationData);

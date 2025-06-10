@@ -186,6 +186,7 @@ const Reservation = () => {
                 marginBottom: "10px",
               }}
             >
+              <div>상품 이미지 {reservation.prodPhoto}</div>
               <input
                 type="checkbox"
                 checked={!!checkedItems[reservation.rsvId]}
