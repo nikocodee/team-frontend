@@ -73,6 +73,13 @@ function PaymentResult() {
               position: "relative",
             }}
           >
+            <div>
+              <img
+                src={reservation.prodPhoto || "/images/default.png"}
+                alt="상품이미지"
+                style={{ width: "200px", height: "auto" }}
+              />
+            </div>
             <div>상품명: {reservation.prodNm}</div>
             <div>상품상세: {reservation.prodDetail}</div>
             <div>수량: {reservation.rsvCnt || 1}</div>
@@ -87,7 +94,7 @@ function PaymentResult() {
         <button
           onClick={() => {
             if (memberId) {
-              navigate(`/payment/member/${memberId}`);
+              navigate(`/payments/member/${memberId}`);
             } else {
               alert("회원 정보를 찾을 수 없습니다.");
             }

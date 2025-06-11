@@ -56,6 +56,13 @@ function Payment() {
                   marginBottom: "20px",
                 }}
               >
+                <div>
+                  <img
+                    src={reservation.prodPhoto || "/images/default.png"}
+                    alt="상품이미지"
+                    style={{ width: "200px", height: "auto" }}
+                  />
+                </div>
                 <div>예약 ID: {reservation.rsvId}</div>
                 <div>회원 ID: {reservation.memberId}</div>
                 <div>상품명: {reservation.prodNm}</div>

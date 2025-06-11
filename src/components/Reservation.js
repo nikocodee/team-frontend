@@ -12,6 +12,14 @@ const Reservation = () => {
   const [loading, setLoading] = useState(true);
   const [checkedItems, setCheckedItems] = useState({});
   const navigate = useNavigate();
+  //페이지 처음 로딩될 때, 모든 상품의 총 결제 금액 표시
+  const [totalSelectedPrice, setTotalSelectedPrice] = useState(() =>
+    reservations.reduce(
+      (sum, reservation) =>
+        sum + (reservation.prodPrice || 0) * (reservation.rsvCnt || 1),
+      0
+    )
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -34,6 +42,24 @@ const Reservation = () => {
 
     init();
   }, [memberId]);
+
+  // 체크박스 선택에 따른 총 금액 업데이트
+  useEffect(() => {
+    const newTotalPrice = reservations.some(
+      (reservation) => checkedItems[reservation.rsvId]
+    ) //체크박스가 선택되면 선택된 상품만 반영되고, 그렇지 않으면 전체 상품 가격을 유지
+      ? reservations.filter((reservation) => checkedItems[reservation.rsvId])
+      : reservations;
+
+    setTotalSelectedPrice(
+      //가격 업데이트
+      newTotalPrice.reduce(
+        (sum, reservation) =>
+          sum + (reservation.prodPrice || 0) * (reservation.rsvCnt || 1),
+        0
+      )
+    );
+  }, [checkedItems, reservations]);
 
   const handleCheckboxChange = (rsvId, isChecked) => {
     setCheckedItems((prev) => ({
@@ -108,11 +134,12 @@ const Reservation = () => {
     );
   };
 
-  const totalPrice = reservations.reduce(
-    (sum, reservation) =>
-      sum + (reservation.prodPrice || 0) * (reservation.rsvCnt || 1),
-    0
-  );
+  // total금액 계산
+  // const totalPrice = reservations.reduce(
+  //   (sum, reservation) =>
+  //     sum + (reservation.prodPrice || 0) * (reservation.rsvCnt || 1),
+  //   0
+  // );
 
   const handlePayment = async () => {
     // 체크된 예약만 필터링
@@ -178,24 +205,30 @@ const Reservation = () => {
               position: "relative",
             }}
           >
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <div>상품 이미지 {reservation.prodPhoto}</div>
-              <input
-                type="checkbox"
-                checked={!!checkedItems[reservation.rsvId]}
-                onChange={(e) =>
-                  handleCheckboxChange(reservation.rsvId, e.target.checked)
-                }
+            {/* <label
+               style={{
+                 // display: "flex",
+                 alignItems: "center",
+                 gap: "10px",
+                 marginBottom: "10px",
+                 }}
+                 > */}
+            <input
+              type="checkbox"
+              checked={!!checkedItems[reservation.rsvId]}
+              onChange={(e) =>
+                handleCheckboxChange(reservation.rsvId, e.target.checked)
+              }
+            />
+            <div>
+              <img
+                src={reservation.prodPhoto || "/images/default.png"}
+                alt="상품이미지"
+                style={{ width: "200px", height: "auto" }}
               />
-              상품명: {reservation.prodNm}
-            </label>
+            </div>
+            <div>상품명: {reservation.prodNm}</div>
+            {/* </label> */}
             <div>예약 ID: {reservation.rsvId}</div>
             <div>회원 ID: {reservation.memberId}</div>
             <div>상품 ID: {reservation.prodId}</div>
@@ -281,7 +314,7 @@ const Reservation = () => {
       >
         전체 삭제
       </button>
-      <div>총 결제 금액: {totalPrice.toLocaleString()} 원</div>
+      <div>총 결제 금액: {totalSelectedPrice.toLocaleString()} 원</div>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <button onClick={() => navigate(-1)}>쇼핑 계속하기</button>
         <button onClick={handlePayment}>결제</button>

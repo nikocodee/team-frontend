@@ -1,129 +1,117 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getPaymentsByMemberId } from "../api/paymentApi";
-import { getReservationsByPaymentId } from "../api/reservationApi";
+import { getPaymentsByMemberId } from "../api/paymentApi"; // API 요청 함수
+import { useParams, useNavigate } from "react-router-dom";
 
-function PaymentList() {
+const PaymentList = () => {
   const { memberId } = useParams();
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const [payments, setPayments] = useState([]);
-  const [reservationsByPaymentId, setReservationsByPaymentId] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   useEffect(() => {
-    const fetchPaymentsAndReservations = async () => {
+    const fetchPayments = async () => {
       try {
         setLoading(true);
-        const paymentsResult = await getPaymentsByMemberId(memberId);
-        const paymentsData = paymentsResult?.data || paymentsResult || [];
-        setPayments(paymentsData);
-
-        // 결제 건별 예약상품 조회
-        const reservationsMap = {};
-        await Promise.all(
-          paymentsData.map(async (payment) => {
-            const resResult = await getReservationsByPaymentId(payment.pymId);
-            reservationsMap[payment.pymId] = resResult?.data || resResult || [];
-          })
-        );
-        setReservationsByPaymentId(reservationsMap);
+        const result = await getPaymentsByMemberId(memberId);
+        setPayments(result ?? []); // Null 방지
       } catch (err) {
-        setError("결제 내역 또는 예약 정보를 불러오는 중 오류가 발생했습니다.");
-        console.error(err);
+        console.error("결제 내역 가져오기 실패:", err);
+        setError("결제 내역을 불러오는 데 실패했습니다.");
       } finally {
         setLoading(false);
       }
     };
 
     if (memberId) {
-      fetchPaymentsAndReservations();
-    } else {
-      setError("회원 정보를 찾을 수 없습니다.");
-      setLoading(false);
+      fetchPayments();
     }
   }, [memberId]);
 
-  if (loading) return <div>결제 내역을 불러오는 중...</div>;
-  if (error) return <div>{error}</div>;
-  if (payments.length === 0) return <div>결제 내역이 없습니다.</div>;
+  if (loading) return <div style={{ textAlign: "center" }}>로딩 중...</div>;
+  if (error) return <div style={{ textAlign: "center" }}>{error}</div>;
+  if (!payments.length)
+    return <div style={{ textAlign: "center" }}>결제 내역이 없습니다.</div>;
+
+  const formatDate = (date) =>
+    date ? new Intl.DateTimeFormat("ko-KR").format(new Date(date)) : "미정";
 
   return (
-    <div style={{ maxWidth: "700px", margin: "50px auto", padding: "10px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>
-        회원님의 결제 내역
-      </h2>
+    <div
+      style={{
+        maxWidth: "700px",
+        margin: "0 auto",
+        padding: "10px",
+      }}
+    >
+      <h2 style={{ marginBottom: "30px" }}>{memberId} 회원님의 결제 내역</h2>
 
       {payments.map((payment) => (
         <div
           key={payment.pymId}
           style={{
-            border: "1px solid #ccc",
+            border: "1px solid #000",
             padding: "15px",
             marginBottom: "20px",
-            position: "relative",
           }}
         >
+          <h4
+            style={{
+              marginTop: "15px",
+            }}
+          >
+            주문 정보
+          </h4>
           <div>주문번호: {payment.pymId}</div>
+          <div>결제수단: {payment.pymMethod || "미지정"}</div>
+          <div>주문일시: {formatDate(payment.pymDate)}</div>
           <div>
-            결제 수단:{" "}
-            {payment.pymMethod === "card" ? "카드결제" : payment.pymMethod}
-          </div>
-          <div>주문 일시: {new Date(payment.pymDate).toLocaleString()}</div>
-          <div>
-            주문 상태:{" "}
+            결제상태:{" "}
             {payment.pymStatus === 1
-              ? "결제 완료"
+              ? "결제완료"
               : payment.pymStatus === 0
-              ? "결제 대기"
+              ? "결제대기"
               : "기타"}
           </div>
-          <div>총 결제 금액: {payment.pymPrice?.toLocaleString()} 원</div>
+          <div>총 결제금액: {payment.pymPrice?.toLocaleString()} 원</div>
 
-          <h4 style={{ marginTop: "15px" }}>주문 상품 정보</h4>
-          {reservationsByPaymentId[payment.pymId]?.length > 0 ? (
-            reservationsByPaymentId[payment.pymId].map((reservation, idx) => (
+          <h4
+            style={{
+              marginTop: "15px",
+            }}
+          >
+            주문 상품 정보
+          </h4>
+          {payment.reservations?.length > 0 ? (
+            payment.reservations.map((rsv, idx) => (
               <div
-                key={reservation.rsvId || idx}
+                key={rsv.rsvId}
                 style={{
-                  border: "1px solid #ddd",
+                  border: "1px solid #000",
                   padding: "10px",
-                  marginBottom: "10px",
                 }}
               >
-                <div>상품명: {reservation.prodNm}</div>
-                <div>상품상세: {reservation.prodDetail}</div>
-                <div>수량: {reservation.rsvCnt || 1}</div>
-                <div>
-                  상품 금액: {reservation.prodPrice?.toLocaleString()} 원
-                </div>
+                <img
+                  src={rsv.prodPhoto || "/images/default.png"}
+                  alt="상품이미지"
+                  style={{ width: "200px", height: "auto" }}
+                />
+                <div>상품명: {rsv.prodNm || "정보 없음"}</div>
+                <div>상품상세: {rsv.prodDetail || "정보 없음"}</div>
+                <div>수량: {rsv.rsvCnt || 1}</div>
+                <div>상품금액: {rsv.prodPrice?.toLocaleString() || 0} 원</div>
+                <div>예약일시: {formatDate(rsv.rsvDate)}</div>
+                <div>이용일: {formatDate(rsv.prodDate)}</div>
               </div>
             ))
           ) : (
-            <div>주문 상품 정보가 없습니다.</div>
+            <div>예약 정보 없음</div>
           )}
-
-          <button
-            style={{ marginTop: "10px" }}
-            onClick={() =>
-              navigate("/payment-result", {
-                state: {
-                  pymId: payment.pymId,
-                  memberId,
-                  reservations: reservationsByPaymentId[payment.pymId],
-                },
-              })
-            }
-          >
-            상세 보기
-          </button>
         </div>
       ))}
-
-      <button onClick={() => navigate(-1)}>뒤로 가기</button>
+      <button onClick={() => navigate("/")}>메인으로 가기</button>
     </div>
   );
-}
+};
 
 export default PaymentList;

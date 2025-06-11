@@ -61,7 +61,7 @@ const AppRouter = () => {
       <Route path="/reservation/member/:memberId" element={<Reservation />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/payment-result" element={<PaymentResult />} />
-      <Route path="/payment/member/:memberId" element={<PaymentList />} />
+      <Route path="/payments/member/:memberId" element={<PaymentList />} />
       <Route path="/review-board" element={<ReviewBoard />} />
       <Route path="/review-write" element={<ReviewWrite />} />
 
