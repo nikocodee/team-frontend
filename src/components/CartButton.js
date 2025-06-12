@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createReservation } from "../api/reservationApi";
 import { v4 as uuidv4 } from "uuid";
 
-function AddToCartButton({ data, productType }) {
+function CartButton({ data, productType }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -46,7 +46,10 @@ function AddToCartButton({ data, productType }) {
               prodPrice: data.hopeWorkAmount,
               rsvType: 1, // 결제전
               rsvCnt,
-              prodPhoto: Array.isArray(data.photos) && data.photos.length > 0 ? data.photos[0] : "/images/default.png"
+              prodPhoto:
+                Array.isArray(data.photos) && data.photos.length > 0
+                  ? data.photos[0]
+                  : "/images/default.png",
             }
           : {
               rsvId: generatedUuid,
@@ -68,12 +71,15 @@ function AddToCartButton({ data, productType }) {
               rsvType: 1, // 결제전
               rsvCnt,
               // prodPhoto: data.photos?.[0] || null,
-              prodPhoto: Array.isArray(data.photos) && data.photos.length > 0 ? data.photos[0] : "/images/default.png"
+              prodPhoto:
+                Array.isArray(data.photos) && data.photos.length > 0
+                  ? data.photos[0]
+                  : "/images/default.png",
             };
 
       await createReservation(reservationData);
 
-      alert("예약이 완료되었습니다!");
+      alert("예약이 완료되었습니다.");
 
       navigate(`/reservation/member/${memberId}`);
 
@@ -104,28 +110,91 @@ function AddToCartButton({ data, productType }) {
         >
           <div
             style={{
-              background: "white",
-              padding: "20px",
-              borderRadius: "10px",
+              backgroundColor: "#fff",
+              padding: "24px",
+              borderRadius: "8px",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
               textAlign: "center",
-              minWidth: "300px",
+              width: "320px",
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3>예약할 수량을 선택하세요</h3>
-            <button onClick={() => setRsvCnt(Math.max(1, rsvCnt - 1))}>
-              -
-            </button>
-            <span>{rsvCnt}</span>
-            <button onClick={() => setRsvCnt(rsvCnt + 1)}>+</button>
-            <div style={{ marginTop: "10px" }}>
-              <button onClick={handleProceedToConfirm}>확인</button>
-              <button onClick={() => setIsModalOpen(false)}>취소</button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center", // 버튼과 숫자를 세로 가운데 정렬
+                justifyContent: "center", // 가로 정렬
+                gap: "20px", // 버튼과 숫자 사이 간격 증가
+                padding: "10px",
+                borderRadius: "8px", // 둥근 모서리 추가
+                width: "180px", // 네모칸 크기 설정
+                margin: "auto", // 가운데 정렬
+              }}
+            >
+              <button
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onClick={() => setRsvCnt(Math.max(1, rsvCnt - 1))}
+              >
+                -
+              </button>
+              <span
+                style={{
+                  fontSize: "22px",
+                }}
+              >
+                {rsvCnt}
+              </span>
+              <button
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onClick={() => setRsvCnt(rsvCnt + 1)}
+              >
+                +
+              </button>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "8px",
+                marginTop: "16px",
+              }}
+            >
+              <button
+                style={{
+                  border: "none",
+                  padding: "12px 18px",
+                  cursor: "pointer",
+                  // fontWeight: "bold",
+                }}
+                onClick={handleProceedToConfirm}
+              >
+                확인
+              </button>
+              <button
+                style={{
+                  border: "none",
+                  padding: "12px 18px",
+                  cursor: "pointer",
+                  // fontWeight: "bold",
+                }}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  alert("예약이 취소되었습니다.");
+                }}
+              >
+                취소
+              </button>
             </div>
           </div>
         </div>
       )}
-
       {isConfirmOpen && (
         <div
           style={{
@@ -151,7 +220,14 @@ function AddToCartButton({ data, productType }) {
           >
             <h3>예약을 진행하시겠습니까?</h3>
             <button onClick={handleConfirmReservation}>확인</button>
-            <button onClick={() => setIsConfirmOpen(false)}>취소</button>
+            <button
+              onClick={() => {
+                setIsConfirmOpen(false);
+                alert("예약이 취소되었습니다.");
+              }}
+            >
+              취소
+            </button>
           </div>
         </div>
       )}
@@ -159,4 +235,4 @@ function AddToCartButton({ data, productType }) {
   );
 }
 
-export default AddToCartButton;
+export default CartButton;
