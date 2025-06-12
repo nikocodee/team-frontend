@@ -77,7 +77,6 @@ function Header() {
             </>
           )}
         </div>
-
       </header>
 
       {/* 네비게이션 */}
@@ -116,7 +115,7 @@ function Header() {
               <li>
                 <a href="#">공지게시판</a>
                 <a href="#">문의하기</a>
-                <a href="#">고객 후기</a>
+                <a href="/review-board">고객 후기</a>
               </li>
             </ul>
           </li>

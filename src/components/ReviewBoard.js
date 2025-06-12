@@ -66,7 +66,18 @@ function ReviewBoard() {
                 {index + 1}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                {review.revTtl}
+                <button
+                  onClick={() => navigate(`/review/${review.revId}`)}
+                  style={{
+                    border: "none",
+                    background: "none",
+                    color: "blue",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                  }}
+                >
+                  {review.revTtl}
+                </button>
               </td>
               <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                 {review.memberId}

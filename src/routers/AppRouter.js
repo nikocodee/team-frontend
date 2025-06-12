@@ -22,6 +22,7 @@ import PaymentResult from "../components/PaymentResult";
 import ReviewBoard from "../components/ReviewBoard";
 import ReviewWrite from "../components/ReviewWrite";
 import PaymentList from "../components/PaymentList";
+import ReviewDetail from "../components/ReviewDetail";
 
 const AppRouter = () => {
   return (
@@ -64,6 +65,7 @@ const AppRouter = () => {
       <Route path="/payments/member/:memberId" element={<PaymentList />} />
       <Route path="/review-board" element={<ReviewBoard />} />
       <Route path="/review-write" element={<ReviewWrite />} />
+      <Route path="/review/:revId" element={<ReviewDetail />} />
 
       {/* 관리자 */}
     </Routes>
