@@ -44,10 +44,8 @@ function ReviewDetail() {
           {review ? new Date(review.revRegDate).toLocaleDateString() : "-"}
         </p>
         <p>조회수: {review?.revViews}</p>
-        <p style={{ textAlign: "justify" }}>{review?.revCont}</p>
-
         <hr />
-        <p style={{ textAlign: "justify" }}>{review.revCont}</p>
+        <p style={{ textAlign: "justify" }}>후기 내용 : {review.revCont}</p>
       </div>
       <div
         style={{
@@ -63,7 +61,9 @@ function ReviewDetail() {
         >
           목록으로
         </button>
-        <button>후기 수정</button>
+        <button onClick={() => navigate(`/review/${revId}/update`)}>
+          후기 수정
+        </button>
       </div>
     </div>
   );

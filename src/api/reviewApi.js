@@ -26,3 +26,8 @@ export const getReviewById = async (revId) => {
   const response = await axios.get(`/api/review/${revId}`);
   return response.data;
 };
+
+export const updateReview = async (revId, updateData) => {
+  const response = await axios.put(`/api/review/${revId}`, updateData);
+  return response.data;
+};

@@ -17,12 +17,13 @@ import NoticeDetail from "../pages/NoticeDetail";
 import SearchResults from "../pages/SearchResults";
 import ChatRoom from "../pages/ChatRoom";
 import Reservation from "../pages/ReservationPage";
-import Payment from "../components/Payment";
-import PaymentResult from "../components/PaymentResult";
-import ReviewBoard from "../components/ReviewBoard";
-import ReviewWrite from "../components/ReviewWrite";
-import PaymentList from "../components/PaymentList";
-import ReviewDetail from "../components/ReviewDetail";
+import Payment from "../pages/PaymentPage";
+import PaymentResult from "../pages/PaymentResultPage";
+import PaymentList from "../pages/PaymentListPage";
+import ReviewBoard from "../pages/ReviewBoardPage";
+import ReviewWrite from "../pages/ReviewWritePage";
+import ReviewDetail from "../pages/ReviewDetailPage";
+import ReviewUpdate from "../pages/ReviewUpdatePage";
 
 const AppRouter = () => {
   return (
@@ -66,6 +67,7 @@ const AppRouter = () => {
       <Route path="/review-board" element={<ReviewBoard />} />
       <Route path="/review-write" element={<ReviewWrite />} />
       <Route path="/review/:revId" element={<ReviewDetail />} />
+      <Route path="/review/:revId/update" element={<ReviewUpdate />} />
 
       {/* 관리자 */}
     </Routes>
